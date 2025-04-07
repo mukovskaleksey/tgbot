@@ -1,11 +1,18 @@
 package main
 
-import "flag"
+import (
+	"flag"
+	"log"
+	"tgbot/clients/telegram"
+)
+
+const (
+	tgBotHost = "api.telegram.org"
+)
 
 func main() {
-	//token = flags.Get(token)
 
-	//tgClient - telegram.New(token)
+	tgClient := telegram.New(tgBotHost, mustToken())
 
 	//fetcher = fetcher.New()
 
@@ -20,5 +27,11 @@ func mustToken() string {
 		"",
 		"token for access to tg bot",
 	)
+	flag.Parse()
+
+	if *token == "" {
+		log.Fatal("token is not init")
+	}
+	return *token
 
 }
