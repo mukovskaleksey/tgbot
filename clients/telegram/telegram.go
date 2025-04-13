@@ -18,10 +18,11 @@ type Client struct {
 
 const (
 	getUpdatesMethod = "getUpdates"
+	sendMessage      = "sendMessage"
 )
 
-func New(host, token string) Client {
-	return Client{
+func New(host, token string) *Client {
+	return &Client{
 		host:     host,
 		basePath: newBasePath(token),
 		client:   http.Client{},
@@ -30,6 +31,17 @@ func New(host, token string) Client {
 
 func newBasePath(token string) string {
 	return "bot" + token
+}
+func (c *Client) SendMessage(chatId int, text string) error {
+	q := url.Values{}
+	q.Add("chat_id", strconv.Itoa(chatId))
+	q.Add("text", text)
+	_, err := c.doRequest(sendMessage, q)
+	if err != nil {
+		return e.Wrap("cant't send message", err)
+	}
+	return nil
+
 }
 
 func (c *Client) Updates(offset int, limit int) ([]Update, error) {
@@ -76,9 +88,5 @@ func (c *Client) doRequest(method string, query url.Values) (data []byte, err er
 		return nil, err
 	}
 	return body, nil
-
-}
-
-func (c *Client) SendMessage() {
 
 }

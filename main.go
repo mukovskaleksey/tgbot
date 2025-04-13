@@ -4,21 +4,30 @@ import (
 	"flag"
 	"log"
 	"tgbot/clients/telegram"
+	"tgbot/consumer/event_consumer"
+	"tgbot/events/telegram2"
+	"tgbot/storage/files"
 )
 
 const (
-	tgBotHost = "api.telegram.org"
+	tgBotHost   = "api.telegram.org"
+	storagePath = "storage"
+	batchSize   = 100
 )
 
 func main() {
 
-	tgClient := telegram.New(tgBotHost, mustToken())
+	eventsProcessor := telegram2.New(telegram.New(tgBotHost, mustToken()),
+		files.New(storagePath),
+	)
 
-	//fetcher = fetcher.New()
+	log.Print("service started")
 
-	//processor = processor.New()
+	consumer := event_consumer.New(eventsProcessor, eventsProcessor, batchSize)
 
-	//consumer.Start(fetcher, processor)
+	if err := consumer.Start(); err != nil {
+		log.Fatal()
+	}
 
 }
 
