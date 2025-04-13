@@ -1,4 +1,4 @@
-package telegram
+package telegram2
 
 const msgHelp = `I can save and keep you pages. Also I can offer you them to read.
 
